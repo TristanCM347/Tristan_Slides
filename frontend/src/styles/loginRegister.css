@@ -1,0 +1,99 @@
+.login-register-screen-background {
+  position: absolute;
+  margin-top: 0;
+  margin-left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#login-register-title {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.login-register-form-container {
+  position: absolute;
+  color: white;
+  left: 50px;
+  right: 50px;
+  height: 600px;
+  top: 50%;
+  transform: translateY(-50%);  
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.auth-submit-button {
+  position: absolute;
+  width: 90%;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%); 
+  border-radius: 10px;
+  height: 40px;
+  border: none;
+  font-size: 1.25em;
+  cursor: pointer;
+}
+
+.login-register-toggle-container {
+  width: 200px;
+  height: 60px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  margin: auto;
+}
+
+.non-selected-toggle {
+  width: 50%;
+  color: rgb(22,22,28);
+  text-align: center;
+  background-color: white;
+  height: 100%;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.selected-toggle {
+  border-radius: 10px;
+  background: linear-gradient(to bottom right, rgb(236, 165, 118), rgb(233, 136, 197));
+  width: 50%;
+  height: 100%;
+  color: white;
+  border: none;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+#auth-error-popup {
+  margin: auto;
+  margin-top: 50px;
+  padding: 10px; 
+  border-radius: 5px;
+  border: 5px solid white;
+  background-color: inherit;
+  color: white;
+  display: block;
+  width: calc(90% - 20px);
+  font-family: inherit;
+}
+
+#auth-error-popup-button {
+  background-color: rgb(235, 100, 150);
+  border: none;
+  padding: 0;
+  margin: auto;
+  border-radius: 10px;
+  width: 50px;
+  height: 25px;
+  margin-bottom: 20px;
+}

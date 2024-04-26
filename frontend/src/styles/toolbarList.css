@@ -1,0 +1,92 @@
+#toolbar-list {
+  display: flex;
+  position: fixed;
+  height: auto;
+  width: 30px;
+  flex-direction: column;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-radius: 10px;
+
+}
+
+@media only screen and (max-width: 650px) {
+  #toolbar-list {
+    display: flex;
+    position: fixed;
+    height: 30px;
+    width: auto;
+    flex-direction: row;
+    top: 140px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 10px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+}
+
+@media only screen and (min-height: 651px) and (orientation: portrait) {
+  #toolbar-list {
+    display: flex;
+    position: fixed;
+    height: 30px;
+    width: auto;
+    flex-direction: row;
+    top: 140px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 10px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+
+}
+
+.toolbar-box {
+  width: 30px;
+  height: 30px;
+  background-color: rgb(22,22,28);
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toolbar-box:hover {
+  background-color: rgb(62,62,68);;
+}
+
+.toolbar-box svg {
+  width: 80%;
+  height: 100%;
+}
+
+#toolbar-add-slide svg {
+  width: 95%; 
+  height: 95%; 
+}
+
+#toolbar-delete-slide svg {
+  width: 95%; 
+  height: 95%; 
+}
+
+#toolbar-code-button svg {
+  width: 90%;
+}
+
+#toolbar-text-button svg {
+  width: 90%;
+  height: 90%;
+}
