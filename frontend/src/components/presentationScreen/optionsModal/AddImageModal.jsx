@@ -245,6 +245,7 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
           ? (<input onKeyDown={handleKeyDown} onChange={handleFileChange} className='thumbnail-input ' name="imageInput" accept="image/jpeg, image/png, image/jpg" type="file"></input>)
           : (<input onKeyDown={handleKeyDown} onChange={handleUrlChange} className='form-inputs' placeholder='Enter a url...' name="imageInput" type="url"></input>)
         }
+
         <button type='submit' className='auth-submit-button white-background-grey-text-button' >{getFormTypeButton()}</button>
       </form>
     </div>
