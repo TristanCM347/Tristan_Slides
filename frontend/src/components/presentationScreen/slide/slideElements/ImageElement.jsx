@@ -7,7 +7,6 @@ function ImageElement ({ content, setOptionsModalState, setPresentation, width, 
   const [slideSize, setSlideSize] = useState({ x: width, y: height });
   const [activeEvent, setActiveEvent] = useState(null);
 
-  console.log(content)
   const handleResizeStart = (e) => {
     e.stopPropagation();
     if (!activeEvent) {
@@ -82,7 +81,6 @@ function ImageElement ({ content, setOptionsModalState, setPresentation, width, 
           }
         });
         const newSlides = prevPresentation.slides.map(slide => {
-          console.log(slide.slideNum, currentSlideNumInt)
           if (slide.slideNum === (currentSlideNumInt + 1)) {
             return {
               ...slide,
@@ -179,7 +177,6 @@ function ImageElement ({ content, setOptionsModalState, setPresentation, width, 
     });
   }
 
-  console.log(content)
   return (
     <Rnd
         bounds={'parent'}

@@ -43,7 +43,6 @@ function NewPresentationModal ({ isNewModalShown, updateModalState, hideNewModal
   const handleFileChange = (event) => {
     const fileNew = event.target.files[0];
     setSelectedFile(fileNew);
-    console.log(fileNew, selectedFile)
   };
 
   const getInitialImagePreviewUrl = () => {

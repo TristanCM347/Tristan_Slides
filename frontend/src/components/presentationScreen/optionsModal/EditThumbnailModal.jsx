@@ -13,7 +13,6 @@ function EditThumbnailModal ({ setOptionsModalState, presentation, setPresentati
   const handleFileChange = (event) => {
     const fileNew = event.target.files[0];
     setSelectedFile(fileNew);
-    console.log(fileNew, selectedFile)
   };
 
   const closeModal = (event) => {

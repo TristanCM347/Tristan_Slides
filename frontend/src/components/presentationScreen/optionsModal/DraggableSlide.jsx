@@ -19,7 +19,6 @@ function DraggableSlide ({ index, slide, slides, setSlides }) {
       const [removedSlide] = newSlides.splice(originIndex, 1);
       newSlides.splice(index, 0, removedSlide);
       setSlides(newSlides);
-      console.log('set slides called')
     }
   };
 

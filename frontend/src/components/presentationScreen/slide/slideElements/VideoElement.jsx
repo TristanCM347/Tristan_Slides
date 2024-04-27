@@ -8,7 +8,6 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
   const [slideSize, setSlideSize] = useState({ x: width, y: height });
   const [activeEvent, setActiveEvent] = useState(null);
 
-  console.log(content)
   const handleResizeStart = (e) => {
     e.stopPropagation();
     if (!activeEvent) { // Ensure no active drag event
@@ -32,7 +31,6 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
   let timeout;
 
   const handleEditVideo = () => {
-    console.log(presentation);
     setClickCount(prevCount => prevCount + 1);
     if (clickCount === 0) {
       timeout = setTimeout(() => {
@@ -48,7 +46,6 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
             }
           });
           const newSlides = prevPresentation.slides.map(slide => {
-            console.log(slide.slideNum, currentSlideNumInt)
             if (slide.slideNum === (currentSlideNumInt + 1)) {
               return {
                 ...slide,
@@ -71,18 +68,14 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
       clearTimeout(timeout);
       setClickCount(0);
     }
-    console.log(presentation)
   };
 
   const onResizeStop = (e, direction, ref, delta, position) => {
     if (activeEvent === 'resizing') {
-      console.log(e)
       const newWidth = parseFloat(ref.style.width) / slideSize.x;
       const newHeight = parseFloat(ref.style.height) / slideSize.y;
-      console.log(position.x, position.y)
       const newLeft = position.x / slideSize.x;
       const newTop = position.y / slideSize.y;
-      console.log('resizing', newWidth, newHeight, newLeft, newTop)
 
       setPresentation(prevPresentation => {
         const newContent = prevPresentation.slides[currentSlideNumInt].content.map(contentItem => {
@@ -99,7 +92,6 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
           }
         });
         const newSlides = prevPresentation.slides.map(slide => {
-          console.log(slide.slideNum, currentSlideNumInt)
           if (slide.slideNum === (currentSlideNumInt + 1)) {
             return {
               ...slide,
@@ -119,7 +111,6 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
   };
 
   const onDragStop = (e, d) => {
-    console.log(e, d)
     if (activeEvent === 'dragging') {
       const newLeft = d.x / slideSize.x;
       const newTop = d.y / slideSize.y;
@@ -137,7 +128,6 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
           }
         });
         const newSlides = prevPresentation.slides.map(slide => {
-          console.log(slide.slideNum, currentSlideNumInt)
           if (slide.slideNum === (currentSlideNumInt + 1)) {
             return {
               ...slide,
@@ -166,7 +156,6 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
   const handleDeleteElemenet = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Right click detected');
     setPresentation(prevPresentation => {
       const newContent = prevPresentation.slides[currentSlideNumInt].content.reduce((acc, contentItem) => {
         if (contentItem.contentNum === content.contentNum) {
@@ -184,7 +173,6 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
       }, []);
 
       const newSlides = prevPresentation.slides.map(slide => {
-        console.log(slide.slideNum, currentSlideNumInt)
         if (slide.slideNum === (currentSlideNumInt + 1)) {
           return {
             ...slide,
@@ -193,13 +181,11 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
         }
         return slide
       });
-      console.log(newSlides, newContent)
       return {
         ...prevPresentation,
         slides: newSlides,
       };
     });
-    console.log(presentation)
   }
   const isYouTubeUrl = (url) => {
     return url.match(/(?:youtu|youtube)(?:\.com|\.be)\/([\w\-_]*)/i);

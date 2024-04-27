@@ -13,7 +13,6 @@ function RearrangeSlidesModal ({ presentation, setPresentation, setOptionsModalS
   }
 
   const submitNewOrder = () => {
-    console.log('Submitting new order with current slides:', slides);
     const updatedSlides = slides.map((slide, index) => ({
       ...slide,
       slideNum: index + 1
@@ -28,11 +27,8 @@ function RearrangeSlidesModal ({ presentation, setPresentation, setOptionsModalS
   useEffect(() => {
     const handleEscapePress = (event) => {
       if (event.key === 'Escape') {
-        console.log('escape')
         closeModal(event);
       } else if (event.key === 'Enter') {
-        console.log('from key press')
-        console.log(slides);
         submitNewOrder();
       }
     };
@@ -44,7 +40,6 @@ function RearrangeSlidesModal ({ presentation, setPresentation, setOptionsModalS
     };
   }, [slides]);
 
-  console.log('rerenderd', slides)
   return (
     <div className='presentation-screen-modal dark-background-colour-theme presentation-modal'>
       <button className="close-presentation-modal-button" onClick={closeModal}>Exit</button>
@@ -53,7 +48,6 @@ function RearrangeSlidesModal ({ presentation, setPresentation, setOptionsModalS
       <label className='center'>Drag the Slide onto the position in the deck you would like it.</label>
       <div className='slides-drag-section'>
         {slides.map((slide, index) => {
-          console.log(slide.slideId);
           return (
             <DraggableSlide
               key={slide.slideId}

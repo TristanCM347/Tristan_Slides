@@ -5,7 +5,6 @@ function SavePresentationButton ({ setOptionsModalState, presentation }) {
   const handleSavePresentation = async () => {
     setOptionsModalState('save-presentation');
     const data = await getData();
-    console.log(presentation, data)
     for (const presentationNum in data.store.presentations) {
       if (data.store.presentations[presentationNum].id === presentation.id) {
         data.store.presentations[presentationNum] = presentation;

@@ -9,11 +9,8 @@ function PreviewPresentationButton ({ presentation }) {
     const url = `http://localhost:${3000}/preview/${presentationId}/${slideNum}`;
     const data = await getData();
     let found = false;
-    console.log(presentationId, presentation, data.store)
     for (const presentationNum in data.store.previews) {
-      console.log(data.store.previews[presentationNum].id, presentation.id)
       if (data.store.previews[presentationNum].id === presentation.id) {
-        console.log('found our pres')
         data.store.previews[presentationNum] = presentation;
         found = true;
       }

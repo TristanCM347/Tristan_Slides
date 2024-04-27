@@ -11,7 +11,6 @@ function PreviewVideoElement ({ key, content, width, height }) {
     });
   }, [width, height]);
 
-  console.log(content)
   return (
     <div
       className='slide-element-container'

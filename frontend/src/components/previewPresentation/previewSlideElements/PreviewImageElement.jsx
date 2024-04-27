@@ -4,7 +4,6 @@ import '../../../styles/slideElements.css'
 function PreviewImageElement ({ key, content, width, height }) {
   const [slideSize, setSlideSize] = useState({ x: width, y: height });
 
-  console.log(content, slideSize)
   useEffect(() => {
     setSlideSize({
       x: width,

@@ -16,9 +16,7 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
       return '10';
     }
     for (const content of presentation.slides[currentSlideNumInt].content) {
-      console.log('in loop')
       if (content.isEdit === true) {
-        console.log('found edit')
         if (field === 'code') {
           return content.code;
         } else if (field === 'width') {
@@ -41,7 +39,6 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
   const positionTop = 0;
   const [fontSize, setFontSize] = useState(getContent('font-size'))
   const [language, setLanguage] = useState(getContent('language'));
-  console.log(presentation.slides[currentSlideNumInt], isEditing)
   const detectLanguage = (code) => {
     if (code.includes('function') || code.includes('const') || code.includes('console.log')) {
       return 'javascript';
@@ -80,9 +77,7 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
 
     setPresentation(prevPresentation => {
       const newContent = [...presentation.slides[currentSlideNumInt].content];
-      console.log(newContent)
       newContent[contentIndex] = textBox;
-      console.log(newContent)
       const updatedSlides = prevPresentation.slides.map(slide => {
         if (slide.slideNum === (currentSlideNumInt + 1)) {
           return {
@@ -92,13 +87,11 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
         }
         return slide
       });
-      console.log(updatedSlides)
       return {
         ...prevPresentation,
         slides: updatedSlides
       };
     });
-    console.log(presentation)
     setOptionsModalState('none');
   }
 
@@ -116,11 +109,9 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
       zIndex: presentation.slides[currentSlideNumInt].content.length,
       isEdit: false,
     };
-    console.log(textBox, presentation);
 
     setPresentation(prevPresentation => {
       const updatedSlides = prevPresentation.slides.map(slide => {
-        console.log(slide.slideNum, currentSlideNumInt)
         if (slide.slideNum === (currentSlideNumInt + 1)) {
           return {
             ...slide,
@@ -129,21 +120,17 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
         }
         return slide
       });
-      console.log(updatedSlides)
       return {
         ...prevPresentation,
         slides: updatedSlides
       };
     });
-    console.log(presentation)
     setOptionsModalState('none');
   }
 
   const handleEditorChange = (value, event) => {
     const newLanguage = detectLanguage(value);
-    console.log(newLanguage);
     setLanguage(newLanguage);
-    console.log(newLanguage, language);
     setCode(value)
   };
 

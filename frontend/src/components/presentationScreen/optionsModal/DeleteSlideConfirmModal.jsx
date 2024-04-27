@@ -13,7 +13,6 @@ function DeleteSlideConfirmModal ({ setCurrentSlideNumInt, setOptionsModalState,
 
     const slideIndex = currentSlideNumInt - 1;
     const prevNumSlides = presentation.numSlides;
-    console.log(presentation, prevNumSlides)
     if (currentSlideNumInt === prevNumSlides) {
       setCurrentSlideNumInt(currentSlideNumInt - 1)
       navigate(`/${presentationId}/${currentSlideNumInt - 1}`);
@@ -22,21 +21,18 @@ function DeleteSlideConfirmModal ({ setCurrentSlideNumInt, setOptionsModalState,
     }
 
     setPresentation(prevPresentation => {
-      console.log('attempting to set')
       const updatedSlides = prevPresentation.slides
         .filter((_, index) => index !== slideIndex)
         .map((slide, index) => ({
           ...slide,
           slideNum: index + 1
         }));
-      console.log(updatedSlides)
       return {
         ...prevPresentation,
         slides: updatedSlides,
         numSlides: prevPresentation.numSlides - 1
       };
     });
-    console.log(presentation, prevNumSlides, currentSlideNumInt, presentation[currentSlideNumInt - 2])
     handleCloseDeletePresPopup();
   }
 

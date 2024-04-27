@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setOptionsModalState, isEditing }) {
-  console.log('text modal rendeed');
-
   const getContent = (field) => {
     if (field === 'description' && !isEditing) {
       return '';
@@ -18,9 +16,7 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
       return '0.3';
     }
     for (const content of presentation.slides[currentSlideNumInt].content) {
-      console.log('in loop')
       if (content.isEdit === true) {
-        console.log('found edit')
         if (field === 'description') {
           return content.description;
         } else if (field === 'colour') {
@@ -48,7 +44,6 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
   const positionTop = 0;
 
   const handleEditText = () => {
-    console.log(description, colour, font, fontSize, presentation.slides[currentSlideNumInt].content);
     let contentIndex;
     let currentLeft;
     let currentTop;
@@ -60,7 +55,6 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
         currentTop = content.positionTop;
       }
     }
-    console.log(colour, font, fontSize)
     const textBox = {
       contentNum: contentIndex + 1,
       type: 'text',
@@ -77,9 +71,7 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
 
     setPresentation(prevPresentation => {
       const newContent = [...presentation.slides[currentSlideNumInt].content];
-      console.log(newContent)
       newContent[contentIndex] = textBox;
-      console.log(newContent)
       const updatedSlides = prevPresentation.slides.map(slide => {
         if (slide.slideNum === (currentSlideNumInt + 1)) {
           return {
@@ -89,18 +81,15 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
         }
         return slide
       });
-      console.log(updatedSlides)
       return {
         ...prevPresentation,
         slides: updatedSlides
       };
     });
-    console.log(presentation)
     setOptionsModalState('none');
   }
 
   const handleSubmitAddText = () => {
-    console.log('called', description, colour, font, fontSize);
     const textBox = {
       contentNum: presentation.slides[currentSlideNumInt].content.length + 1,
       type: 'text',
@@ -115,11 +104,9 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
       zIndex: presentation.slides[currentSlideNumInt].content.length,
       isEdit: false,
     };
-    console.log(textBox, presentation);
 
     setPresentation(prevPresentation => {
       const updatedSlides = prevPresentation.slides.map(slide => {
-        console.log(slide.slideNum, currentSlideNumInt)
         if (slide.slideNum === (currentSlideNumInt + 1)) {
           return {
             ...slide,
@@ -128,13 +115,11 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
         }
         return slide
       });
-      console.log(updatedSlides)
       return {
         ...prevPresentation,
         slides: updatedSlides
       };
     });
-    console.log(presentation)
     setOptionsModalState('none');
   }
 

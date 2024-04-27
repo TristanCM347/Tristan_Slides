@@ -13,9 +13,7 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
       return '0.3';
     }
     for (const content of presentation.slides[currentSlideNumInt].content) {
-      console.log('in loop')
       if (content.isEdit === true) {
-        console.log('found edit')
         if (field === 'description') {
           return content.description;
         } else if (field === 'url') {
@@ -34,13 +32,11 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
   const handleFileChange = async (event) => {
     const fileNew = event.target.files[0];
     setSelectedFile(await fileToDataUrl(fileNew));
-    console.log(fileNew, selectedFile)
   };
 
   const handleUrlChange = async (event) => {
     const fileNew = event.target.value
     setSelectedFile(await fileToDataUrl(fileNew));
-    console.log(fileNew, selectedFile)
   };
 
   const width = getContent('width');
@@ -76,9 +72,7 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
 
     setPresentation(prevPresentation => {
       const newContent = [...presentation.slides[currentSlideNumInt].content];
-      console.log(newContent)
       newContent[contentIndex] = textBox;
-      console.log(newContent)
       const updatedSlides = prevPresentation.slides.map(slide => {
         if (slide.slideNum === (currentSlideNumInt + 1)) {
           return {
@@ -88,13 +82,11 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
         }
         return slide
       });
-      console.log(updatedSlides)
       return {
         ...prevPresentation,
         slides: updatedSlides
       };
     });
-    console.log(presentation)
     setOptionsModalState('none');
   }
 
@@ -110,11 +102,9 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
       positionTop,
       isEdit: false,
     };
-    console.log(textBox, presentation);
 
     setPresentation(prevPresentation => {
       const updatedSlides = prevPresentation.slides.map(slide => {
-        console.log(slide.slideNum, currentSlideNumInt)
         if (slide.slideNum === (currentSlideNumInt + 1)) {
           return {
             ...slide,
@@ -123,13 +113,11 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
         }
         return slide
       });
-      console.log(updatedSlides)
       return {
         ...prevPresentation,
         slides: updatedSlides
       };
     });
-    console.log(presentation)
     setOptionsModalState('none');
   }
 
@@ -245,7 +233,6 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
           ? (<input onKeyDown={handleKeyDown} onChange={handleFileChange} className='thumbnail-input ' name="imageInput" accept="image/jpeg, image/png, image/jpg" type="file"></input>)
           : (<input onKeyDown={handleKeyDown} onChange={handleUrlChange} className='form-inputs' placeholder='Enter a url...' name="imageInput" type="url"></input>)
         }
-
         <button type='submit' className='auth-submit-button white-background-grey-text-button' >{getFormTypeButton()}</button>
       </form>
     </div>

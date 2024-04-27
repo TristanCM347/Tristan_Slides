@@ -41,7 +41,6 @@ function TextElement ({ content, setOptionsModalState, setPresentation, width, h
         }
       });
       const newSlides = prevPresentation.slides.map(slide => {
-        console.log(slide.slideNum, currentSlideNumInt)
         if (slide.slideNum === (currentSlideNumInt + 1)) {
           return {
             ...slide,
@@ -82,7 +81,6 @@ function TextElement ({ content, setOptionsModalState, setPresentation, width, h
           }
         });
         const newSlides = prevPresentation.slides.map(slide => {
-          console.log(slide.slideNum, currentSlideNumInt)
           if (slide.slideNum === (currentSlideNumInt + 1)) {
             return {
               ...slide,

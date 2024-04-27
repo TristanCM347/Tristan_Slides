@@ -6,7 +6,6 @@ function EditTitleModal ({ setOptionsModalState, presentation, setPresentation }
     return presentation.name;
   }
 
-  console.log(presentation.name)
   const [title, setTitle] = useState(initialPresentationName());
 
   const handleInputChange = (event) => {

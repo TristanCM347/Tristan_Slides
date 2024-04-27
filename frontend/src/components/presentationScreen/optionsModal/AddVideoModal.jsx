@@ -77,7 +77,6 @@ function AddVideoModal ({ presentation, currentSlideNumInt, setPresentation, set
         }
         return slide
       });
-      console.log(updatedSlides)
       return {
         ...prevPresentation,
         slides: updatedSlides
@@ -102,7 +101,6 @@ function AddVideoModal ({ presentation, currentSlideNumInt, setPresentation, set
 
     setPresentation(prevPresentation => {
       const updatedSlides = prevPresentation.slides.map(slide => {
-        console.log(slide.slideNum, currentSlideNumInt)
         if (slide.slideNum === (currentSlideNumInt + 1)) {
           return {
             ...slide,
@@ -111,7 +109,6 @@ function AddVideoModal ({ presentation, currentSlideNumInt, setPresentation, set
         }
         return slide
       });
-      console.log(updatedSlides)
       return {
         ...prevPresentation,
         slides: updatedSlides
@@ -123,7 +120,6 @@ function AddVideoModal ({ presentation, currentSlideNumInt, setPresentation, set
   const handleUrlChange = async (event) => {
     const fileNew = event.target.value
     setSelectedFile(await fileToDataUrl(fileNew));
-    console.log(fileNew, selectedFile)
   };
 
   const [isFile, setIsFile] = useState(true);

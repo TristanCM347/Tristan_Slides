@@ -6,7 +6,6 @@ function AddBackgroundModal ({ presentation, currentSlideNumInt, setPresentation
   const [background, setBackground] = useState(presentation.slides[currentSlideNumInt].background);
   const [defaultBackground, setDefaultBackground] = useState(presentation.defaultBackground);
   const [useCustom, setUseCustom] = useState(presentation.slides[currentSlideNumInt].useCustom);
-  console.log(presentation.slides[currentSlideNumInt].background)
 
   const handleSubmitAddBackground = () => {
     setPresentation(prevPresentation => {
@@ -52,7 +51,6 @@ function AddBackgroundModal ({ presentation, currentSlideNumInt, setPresentation
 
     return () => {
       window.removeEventListener('keydown', handleEscapePress);
-      console.log('cleanup')
     };
   }, []);
 

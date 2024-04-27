@@ -6,7 +6,6 @@ function DeletePresentationModal ({ setOptionsModalState, presentation }) {
   const navigate = useNavigate();
 
   const handleConfirmDeletePresentation = async () => {
-    console.log(presentation)
     const data = await getData();
     for (const presentationNum in data.store.presentations) {
       if (data.store.presentations[presentationNum].id === presentation.id) {
