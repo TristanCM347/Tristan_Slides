@@ -178,7 +178,6 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
 
     return () => {
       window.removeEventListener('keydown', handleEscapePress);
-      console.log('cleanup')
     };
   }, []);
 
@@ -218,6 +217,7 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
         <label className='form-labels' htmlFor="slide-textbox">Slide Textbox:</label>
         <textarea className="slide-textbox form-inputs"
           value={description}
+          required
           onChange={handleTextBox}
           placeholder="Enter textbox content"
           rows="2"

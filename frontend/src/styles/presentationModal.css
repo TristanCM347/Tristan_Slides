@@ -36,7 +36,7 @@
 
 .restore-presentation-form {
   position: absolute;
-  top: 100px;
+  top: 120px;
   bottom: 90px;
   left: 10px;
   right: 10px;
@@ -208,4 +208,45 @@
 
 .radio-button {
   margin-top: 0 !important;
+}
+
+.rearrange-slide {
+  width: 80px;
+  height: 40px;
+  background-color: white;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  color: rgb(22, 22, 28);;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.rearrange-slide-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  overflow: auto;
+}
+
+.slides-drag-section {
+  position: absolute;
+  top: 200px;
+  bottom: 90px;
+  left: 10px;
+  right: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }

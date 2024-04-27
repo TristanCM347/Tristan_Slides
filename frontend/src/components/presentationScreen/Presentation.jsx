@@ -19,6 +19,7 @@ function Presentation () {
   const [presentation, setPresentation] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentSlideNumInt, setCurrentSlideNumInt] = useState(1);
+  // const prevSlideId = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,7 +76,11 @@ function Presentation () {
       if (presentation) {
         saveCurrentPresentationIntoVersionHistory();
       }
-    }, 90000);
+    }, 900000); // 900000ms = 900s = 15min
+
+    // useEffect(() => {
+    //   prevSlideId // Store current value in ref
+    // }, [prevSlideId]);
 
     return () => clearInterval(interval);
   }, [presentation]);

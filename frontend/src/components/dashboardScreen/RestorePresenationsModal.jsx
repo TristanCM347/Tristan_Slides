@@ -113,7 +113,7 @@ function RestorePresenationsModal ({ isNewModalShown, updateModalState, setIsRes
         <button className="close-presentation-modal-button" onClick={closeModal}>Exit</button>
         <h2> Restore Deleted Presentations Form </h2>
         {dataLoaded && deletedPresentations.length > 0 && (
-          <div id="restore-presentation-form">
+          <div className="restore-presentation-form">
             {deletedPresentations.map(presentation => (
               <div key={presentation.id} className="restore-presentation-item">
               <input

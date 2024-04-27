@@ -1,18 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fileToDataUrl } from '../../../utility/fileToData';
 
-// image
-// - url
-// - description
-// - position
-// - width
-// - height
-// - z-index
-
-// need a currentSlide and setSlide input
 function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, setOptionsModalState, isEditing }) {
-  console.log('text modal rendeed');
-
   const getContent = (field) => {
     if (field === 'description' && !isEditing) {
       return '';
@@ -169,51 +158,95 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
     }
   }
 
+  const getFormTypeButton = () => {
+    if (isEditing) {
+      return 'Change';
+    } else {
+      return 'Submit';
+    }
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (isEditing) {
+      handleEditImage();
+    } else {
+      handleSubmitAddImage();
+    }
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (event.target.form.checkValidity()) {
+        handleSubmit(event);
+      } else {
+        event.target.form.reportValidity();
+      }
+    }
+  };
+
+  const handleEscapePress = (event) => {
+    if (event.key === 'Escape') {
+      handleExitModal(event);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleEscapePress);
+
+    return () => {
+      window.removeEventListener('keydown', handleEscapePress);
+    };
+  }, []);
+
   return (
     <div className='presentation-modal dark-background-colour-theme'>
-      <button className="close-presentation-modal-button" onClick={handleExitModal}>Exit</button>
-      <h2><span>{getFormTypeTitle()}</span> Image Form</h2>
-      <label className='form-labels' >Description:</label>
-      <textarea className="slide-textbox form-inputs"
-        value={description}
-        onChange={handleTextBox}
-        placeholder="Description of image for alt tag"
-        rows="2"
-      ></textarea>
-      <label className='form-labels'>Type:</label>
-      <div>
-        <label className='radio-button'>
-          <input
-            type="radio"
-            id="url"
-            name="source"
-            value="url"
-            onChange={() => setIsFile(true)}
-            checked={isFile}
-          />
-          URL
-        </label>
-        <label className='radio-button'>
-          <input
-            type="radio"
-            id="file"
-            name="source"
-            value="file"
-            onChange={() => setIsFile(false)}
-            checked={!isFile}
-          />
-          File
-        </label>
-      </div>
-      <label className='form-labels'>{getFileTypeTitle()}</label>
-      {!isFile
-        ? (<input onChange={handleFileChange} className='thumbnail-input ' name="imageInput" accept="image/jpeg, image/png, image/jpg" type="file"></input>)
-        : (<input onChange={handleUrlChange} className='form-inputs' placeholder='Enter a url...' name="imageInput" type="url"></input>)
-      }
-      {!isEditing
-        ? (<button className='submit-adding-image auth-submit-button white-background-grey-text-button' onClick={handleSubmitAddImage}>Submit</button>)
-        : (<button className='auth-submit-button white-background-grey-text-button' onClick={handleEditImage}>Edit</button>)
-      }
+      <form onSubmit={handleSubmit}>
+        <button className="close-presentation-modal-button" onClick={handleExitModal}>Exit</button>
+        <h2><span>{getFormTypeTitle()}</span> Image Form</h2>
+        <label className='form-labels' >Description:</label>
+        <textarea className="slide-textbox form-inputs"
+          value={description}
+          onChange={handleTextBox}
+          placeholder="Description of image for alt tag"
+          rows="2"
+          onKeyDown={handleKeyDown}
+        ></textarea>
+        <label className='form-labels'>Type:</label>
+        <div>
+          <label className='radio-button'>
+            <input
+              type="radio"
+              id="url"
+              name="source"
+              value="url"
+              onChange={() => setIsFile(true)}
+              checked={isFile}
+              onKeyDown={handleKeyDown}
+            />
+            URL
+          </label>
+          <label className='radio-button'>
+            <input
+              type="radio"
+              id="file"
+              name="source"
+              value="file"
+              onChange={() => setIsFile(false)}
+              checked={!isFile}
+              onKeyDown={handleKeyDown}
+            />
+            File
+          </label>
+        </div>
+        <label className='form-labels'>{getFileTypeTitle()}</label>
+        {!isFile
+          ? (<input onKeyDown={handleKeyDown} onChange={handleFileChange} className='thumbnail-input ' name="imageInput" accept="image/jpeg, image/png, image/jpg" type="file"></input>)
+          : (<input onKeyDown={handleKeyDown} onChange={handleUrlChange} className='form-inputs' placeholder='Enter a url...' name="imageInput" type="url"></input>)
+        }
+        <button type='submit' className='auth-submit-button white-background-grey-text-button' >{getFormTypeButton()}</button>
+      </form>
     </div>
   );
 }

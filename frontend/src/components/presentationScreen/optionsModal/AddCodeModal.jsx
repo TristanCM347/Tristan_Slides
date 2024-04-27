@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import '../../../styles/presentationModal.css';
 
@@ -163,30 +163,71 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
     }
   }
 
+  const handleEscapePress = (event) => {
+    if (event.key === 'Escape') {
+      handleExitModal(event);
+    }
+  };
+
+  const getFormTypeButton = () => {
+    if (isEditing) {
+      return 'Change';
+    } else {
+      return 'Submit';
+    }
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (isEditing) {
+      handleEditCode();
+    } else {
+      handleSubmitAddCode();
+    }
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (event.target.form.checkValidity()) {
+        handleSubmit(event);
+      } else {
+        event.target.form.reportValidity();
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleEscapePress);
+
+    return () => {
+      window.removeEventListener('keydown', handleEscapePress);
+    };
+  }, []);
+
   return (
     <div className='presentation-modal dark-background-colour-theme'>
-      <button className="close-presentation-modal-button" onClick={handleExitModal}>Exit</button>
-      <h2><span>{getFormTypeTitle()}</span> Code Form</h2>
-      <label className='form-labels' >Code Editor:</label>
-      <div>
-      <Editor
-        className="custom-editor"
-        onChange={handleEditorChange}
-        language={language}
-        defaultValue={code}
-        theme="vs-dark"
-        options={{
-          lineNumbers: 'on',
-          minimap: { enabled: false },
-        }}
-      />
-      </div>
-      <label className='form-labels' >Font size (em):</label>
-      <input onChange={handleFontSize} value={fontSize} className='font-size' type="text" placeholder='Font size' />
-      {!isEditing
-        ? (<button className='auth-submit-button white-background-grey-text-button' onClick={handleSubmitAddCode}>Submit</button>)
-        : (<button className='auth-submit-button white-background-grey-text-button' onClick={handleEditCode}>Edit</button>)
-      }
+      <form onSubmit={handleSubmit}>
+        <button className="close-presentation-modal-button" onClick={handleExitModal}>Exit</button>
+        <h2><span>{getFormTypeTitle()}</span> Code Form</h2>
+        <label className='form-labels' >Code Editor:</label>
+        <div>
+        <Editor
+          className="custom-editor"
+          onChange={handleEditorChange}
+          language={language}
+          defaultValue={code}
+          theme="vs-dark"
+          options={{
+            lineNumbers: 'on',
+            minimap: { enabled: false },
+          }}
+        />
+        </div>
+        <label className='form-labels' >Font size (em):</label>
+        <input onKeyDown={handleKeyDown} onChange={handleFontSize} value={fontSize} className='font-size  form-inputs' type="text" placeholder='Font size' />
+        <button type='submit' className='auth-submit-button white-background-grey-text-button' >{getFormTypeButton()}</button>
+      </form>
     </div>
   );
 }

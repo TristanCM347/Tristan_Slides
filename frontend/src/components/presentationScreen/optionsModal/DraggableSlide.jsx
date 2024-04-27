@@ -1,7 +1,7 @@
 import React from 'react';
-import '../../../styles/slide.css';
+import '../../../styles/presentationModal.css';
 
-function DraggableSlide ({ slide, index, slides, onRearrange, setSlides }) {
+function DraggableSlide ({ index, slide, slides, setSlides }) {
   const handleDragStart = (e) => {
     e.dataTransfer.setData('application/reactflow', index);
     e.dataTransfer.effectAllowed = 'move';
@@ -15,10 +15,11 @@ function DraggableSlide ({ slide, index, slides, onRearrange, setSlides }) {
     e.preventDefault();
     const originIndex = parseInt(e.dataTransfer.getData('application/reactflow'));
     if (originIndex !== index) {
-      const newSlides = Array.from(slides);
-      const [removed] = newSlides.splice(originIndex, 1);
-      newSlides.splice(index, 0, removed);
+      const newSlides = [...slides];
+      const [removedSlide] = newSlides.splice(originIndex, 1);
+      newSlides.splice(index, 0, removedSlide);
       setSlides(newSlides);
+      console.log('set slides called')
     }
   };
 
@@ -29,7 +30,6 @@ function DraggableSlide ({ slide, index, slides, onRearrange, setSlides }) {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           className="rearrange-slide"
-          style={{ left: `${index * 100}px`, color: 'black' }}
       >
           Slide {slide.slideNum}
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fileToDataUrl } from '../../../utility/fileToData';
 
 function AddVideoModal ({ presentation, currentSlideNumInt, setPresentation, setOptionsModalState, isEditing }) {
@@ -34,12 +34,13 @@ function AddVideoModal ({ presentation, currentSlideNumInt, setPresentation, set
     const fileNew = event.target.files[0];
     setSelectedFile(await fileToDataUrl(fileNew));
   };
+
   const width = getContent('width');
   const height = getContent('height')
   const positionLeft = 0;
   const positionTop = 0;
 
-  const handleEditVideo = async () => {
+  const handleEditVideo = () => {
     let contentIndex;
     let currentLeft;
     let currentTop;
@@ -85,7 +86,7 @@ function AddVideoModal ({ presentation, currentSlideNumInt, setPresentation, set
     setOptionsModalState('none');
   }
 
-  const handleSubmitAddVideo = async (event) => {
+  const handleSubmitAddVideo = (event) => {
     const textBox = {
       contentNum: presentation.slides[currentSlideNumInt].content.length + 1,
       type: 'video',
@@ -147,73 +148,119 @@ function AddVideoModal ({ presentation, currentSlideNumInt, setPresentation, set
     }
   }
 
+  const getFormTypeButton = () => {
+    if (isEditing) {
+      return 'Change';
+    } else {
+      return 'Submit';
+    }
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (isEditing) {
+      handleEditVideo();
+    } else {
+      handleSubmitAddVideo();
+    }
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (event.target.form.checkValidity()) {
+        handleSubmit(event);
+      } else {
+        event.target.form.reportValidity();
+      }
+    }
+  };
+
+  const handleEscapePress = (event) => {
+    if (event.key === 'Escape') {
+      handleExitModal(event);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleEscapePress);
+
+    return () => {
+      window.removeEventListener('keydown', handleEscapePress);
+    };
+  }, []);
+
   return (
     <div className='presentation-modal dark-background-colour-theme'>
-      <button className="close-presentation-modal-button" onClick={handleExitModal}>Exit</button>
-      <h2><span>{getFormTypeTitle()}</span> Video Form</h2>
-      <label className='form-labels' >Autoplay:</label>
-      <div>
-        <label className='radio-button'>
-          <input
-            type="radio"
-            id="autosave-yes"
-            name="autoplay"
-            value="yes"
-            onChange={() => setAutoplay(true)}
-            checked={autoplay}
-          />
-          Yes
-        </label>
-        <label className='radio-button'>
-          <input
-            type="radio"
-            id="autosave-no"
-            name="autoplay"
-            value="no"
-            onChange={() => setAutoplay(false)}
-            checked={!autoplay}
-          />
-          No
-        </label>
-      </div>
-      <label className='form-labels'>Type:</label>
-      <div>
-        <label className='radio-button'>
-          <input
-            type="radio"
-            name="source"
-            value="url"
-            onChange={() => setIsFile(true)}
-            checked={isFile}
-          />
-          URL
-        </label>
-        <label className='radio-button'>
-          <input
-            type="radio"
-            name="source"
-            value="file"
-            onChange={() => setIsFile(false)}
-            checked={!isFile}
-          />
-          File
-        </label>
-      </div>
-      <label className='form-labels' >{getFileTypeTitle()}</label>
-      {!isFile
-        ? (<input
-            className="video-input"
-            onChange={handleFileChange}
-            name="videoInput"
-            accept="video/mp4, video/webm, video/ogg"
-            type="file"
-          />)
-        : (<input className="thumbnail-input form-inputs" onChange={handleUrlChange} placeholder='Enter a url...' name="imageInput" type="url"></input>)
-      }
-      {!isEditing
-        ? (<button className='auth-submit-button white-background-grey-text-button' onClick={handleSubmitAddVideo}>Submit</button>)
-        : (<button className='auth-submit-button white-background-grey-text-button' onClick={handleEditVideo}>Edit</button>)
-      }
+      <form onSubmit={handleSubmit}>
+        <button className="close-presentation-modal-button" onClick={handleExitModal}>Exit</button>
+        <h2><span>{getFormTypeTitle()}</span> Video Form</h2>
+        <label className='form-labels' >Autoplay:</label>
+        <div>
+          <label className='radio-button'>
+            <input
+              type="radio"
+              id="autosave-yes"
+              name="autoplay"
+              value="yes"
+              onChange={() => setAutoplay(true)}
+              checked={autoplay}
+              onKeyDown={handleKeyDown}
+            />
+            Yes
+          </label>
+          <label className='radio-button'>
+            <input
+              type="radio"
+              id="autosave-no"
+              name="autoplay"
+              value="no"
+              onChange={() => setAutoplay(false)}
+              checked={!autoplay}
+              onKeyDown={handleKeyDown}
+            />
+            No
+          </label>
+        </div>
+        <label className='form-labels'>Type:</label>
+        <div>
+          <label className='radio-button'>
+            <input
+              type="radio"
+              name="source"
+              value="url"
+              onChange={() => setIsFile(true)}
+              checked={isFile}
+              onKeyDown={handleKeyDown}
+            />
+            URL
+          </label>
+          <label className='radio-button'>
+            <input
+              type="radio"
+              name="source"
+              value="file"
+              onChange={() => setIsFile(false)}
+              checked={!isFile}
+              onKeyDown={handleKeyDown}
+            />
+            File
+          </label>
+        </div>
+        <label className='form-labels' >{getFileTypeTitle()}</label>
+        {!isFile
+          ? (<input
+              className="video-input"
+              onChange={handleFileChange}
+              name="videoInput"
+              accept="video/mp4, video/webm, video/ogg"
+              type="file"
+              onKeyDown={handleKeyDown}
+            />)
+          : (<input onKeyDown={handleKeyDown} className="thumbnail-input form-inputs" onChange={handleUrlChange} placeholder='Enter a url...' name="imageInput" type="url"></input>)
+        }
+        <button type='submit' className='auth-submit-button white-background-grey-text-button' >{getFormTypeButton()}</button>
+      </form>
     </div>
   );
 }

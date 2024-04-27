@@ -45,7 +45,7 @@ function Slide ({ optionsModalState, currentSlideNumInt, presentation, setOption
     };
   }, []);
 
-  console.log(presentation)
+  // console.log(presentation)
 
   return (
     <div ref={slideContainerRef} className='slide-container dark-background-colour-theme'>
