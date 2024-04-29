@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DeletePresentationModal from './DeletePresentationModal';
 import SavePresentationModal from './SavePresentationModal';
 import EditTitleModal from './EditTitleModal';
@@ -16,26 +16,32 @@ import RearrangeSlidesModal from './RearrangeSlidesModal';
 import AddTransitionModal from './AddTransitionModal';
 import '../../../styles/presentationModal.css';
 
-function PresentationOptionsModal ({ optionsModalState, setOptionsModalState, presentation, setPresentation, setCurrentSlideNumInt, currentSlideNumInt }) {
+function PresentationOptionsModal ({ optionsModalState, setOptionsModalState, presentation, setPresentation, setCurrentSlideNumInt, currentSlideNumInt, selectedElementID, setSelectedElementID }) {
+  const [version, setVersion] = useState('current');
+
+  useEffect(() => {
+    if (optionsModalState === 'none') {
+      setSelectedElementID(null);
+    }
+  }, [optionsModalState, setSelectedElementID]);
+
   if (optionsModalState === 'none') {
     return null;
   }
-
-  const [version, setVersion] = useState('current');
 
   return (
     <div id='presentation-screen-modal'>
       {optionsModalState === 'slide-rearrange' && <RearrangeSlidesModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState}/>}
       {optionsModalState === 'slide-transition' && <AddTransitionModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState}/>}
       {optionsModalState === 'slide-background' && <AddBackgroundModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState}/>}
-      {optionsModalState === 'slide-add-image' && <AddImageModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={false}/>}
-      {optionsModalState === 'slide-edit-image' && <AddImageModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={true}/>}
-      {optionsModalState === 'slide-add-code' && <AddCodeModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={false}/>}
-      {optionsModalState === 'slide-edit-code' && <AddCodeModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={true}/>}
-      {optionsModalState === 'slide-add-video' && <AddVideoModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={false}/>}
-      {optionsModalState === 'slide-edit-video' && <AddVideoModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={true}/>}
-      {optionsModalState === 'slide-add-text' && <AddTextModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={false}/>}
-      {optionsModalState === 'slide-edit-text' && <AddTextModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={true}/>}
+      {optionsModalState === 'slide-add-image' && <AddImageModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={false} selectedElementID={selectedElementID}/>}
+      {optionsModalState === 'slide-edit-image' && <AddImageModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={true} selectedElementID={selectedElementID}/>}
+      {optionsModalState === 'slide-add-code' && <AddCodeModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={false} selectedElementID={selectedElementID}/>}
+      {optionsModalState === 'slide-edit-code' && <AddCodeModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={true} selectedElementID={selectedElementID}/>}
+      {optionsModalState === 'slide-add-video' && <AddVideoModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={false} selectedElementID={selectedElementID}/>}
+      {optionsModalState === 'slide-edit-video' && <AddVideoModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={true} selectedElementID={selectedElementID}/>}
+      {optionsModalState === 'slide-add-text' && <AddTextModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={false} selectedElementID={selectedElementID}/>}
+      {optionsModalState === 'slide-edit-text' && <AddTextModal presentation={presentation} currentSlideNumInt={currentSlideNumInt - 1} setPresentation={setPresentation} setOptionsModalState={setOptionsModalState} isEditing={true} selectedElementID={selectedElementID} />}
       {optionsModalState === 'delete-presentation' && <DeletePresentationModal setOptionsModalState={setOptionsModalState} presentation={presentation}/>}
       {optionsModalState === 'edit-title' && <EditTitleModal setOptionsModalState={setOptionsModalState} presentation={presentation} setPresentation={setPresentation}/>}
       {optionsModalState === 'edit-thumbnail' && <EditThumbnailModal setOptionsModalState={setOptionsModalState} presentation={presentation} setPresentation={setPresentation}/>}

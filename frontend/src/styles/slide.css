@@ -27,6 +27,7 @@
   margin: 0;
   border: 1px solid white;
   position: relative;
+  overflow: hidden;
 }
 
 /* .slide-transition-right {

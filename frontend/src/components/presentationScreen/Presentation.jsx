@@ -19,7 +19,7 @@ function Presentation () {
   const [presentation, setPresentation] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentSlideNumInt, setCurrentSlideNumInt] = useState(1);
-  // const prevSlideId = useRef(null);
+  const [selectedElementID, setSelectedElementID] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,10 +78,6 @@ function Presentation () {
       }
     }, 900000); // 900000ms = 900s = 15min
 
-    // useEffect(() => {
-    //   prevSlideId // Store current value in ref
-    // }, [prevSlideId]);
-
     return () => clearInterval(interval);
   }, [presentation]);
 
@@ -95,12 +91,12 @@ function Presentation () {
       <div id="presentation-main" className="fancy-background-colour-theme">
         <PresentationTitle presentation={presentation} optionsModalState={optionsModalState} />
         <div id="presentation-centre">
-          <Slide optionsModalState={optionsModalState} currentSlideNumInt={currentSlideNumInt} presentation={presentation} setOptionsModalState={setOptionsModalState} setPresentation={setPresentation}/>
+          <Slide optionsModalState={optionsModalState} currentSlideNumInt={currentSlideNumInt} presentation={presentation} setOptionsModalState={setOptionsModalState} setPresentation={setPresentation} selectedElementID={selectedElementID} setSelectedElementID={setSelectedElementID}/>
         </div>
         <ToolbarList optionsModalState={optionsModalState} setOptionsModalState={setOptionsModalState} presentation={presentation} setPresentation={setPresentation}/>
         <SlideNavigation optionsModalState={optionsModalState} currentSlideNumInt={currentSlideNumInt} presentation={presentation} />
         <PresentationOptionsModal optionsModalState={optionsModalState} setOptionsModalState={setOptionsModalState} presentation={presentation} setPresentation={setPresentation}
-        setCurrentSlideNumInt={setCurrentSlideNumInt} currentSlideNumInt={currentSlideNumInt} />
+        setCurrentSlideNumInt={setCurrentSlideNumInt} currentSlideNumInt={currentSlideNumInt} selectedElementID={selectedElementID} setSelectedElementID={setSelectedElementID}/>
       </div>
     </div>
   );

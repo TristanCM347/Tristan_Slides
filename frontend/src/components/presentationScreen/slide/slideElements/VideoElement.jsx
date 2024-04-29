@@ -2,24 +2,20 @@ import React, { useState, useEffect } from 'react';
 import '../../../../styles/slideElements.css'
 import { Rnd } from 'react-rnd';
 
-function VideoElement ({ content, setOptionsModalState, setPresentation, width, height, currentSlideNumInt, presentation }) {
-  const [clickCount, setClickCount] = useState(0);
-  const [singleClicked, setSingleClicked] = useState(false);
+function VideoElement ({ content, setOptionsModalState, setPresentation, width, height, currentSlideNumInt, presentation, selectedElementID, setSelectedElementID }) {
   const [slideSize, setSlideSize] = useState({ x: width, y: height });
-  const [activeEvent, setActiveEvent] = useState(null);
+  const [isSelected, setIsSelected] = useState(selectedElementID === content.contentId);
+
+  useEffect(() => {
+    setIsSelected(selectedElementID === content.contentId);
+  }, [selectedElementID, content.contentId]);
 
   const handleResizeStart = (e) => {
     e.stopPropagation();
-    if (!activeEvent) { // Ensure no active drag event
-      setActiveEvent('resizing');
-    }
   };
 
   const handleDragStart = (e) => {
     e.stopPropagation();
-    if (!activeEvent) { // Ensure no active resize event
-      setActiveEvent('dragging');
-    }
   };
 
   useEffect(() => {
@@ -28,130 +24,80 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
       y: height
     });
   }, [width, height]);
-  let timeout;
 
   const handleEditVideo = () => {
-    setClickCount(prevCount => prevCount + 1);
-    if (clickCount === 0) {
-      timeout = setTimeout(() => {
-        setPresentation(prevPresentation => {
-          const newContent = presentation.slides[currentSlideNumInt].content.map(contentItem => {
-            if (contentItem.contentNum === content.contentNum) {
-              return {
-                ...contentItem,
-                isEdit: true
-              };
-            } else {
-              return contentItem;
-            }
-          });
-          const newSlides = prevPresentation.slides.map(slide => {
-            if (slide.slideNum === (currentSlideNumInt + 1)) {
-              return {
-                ...slide,
-                content: newContent,
-              };
-            }
-            return slide
-          });
-
-          return {
-            ...prevPresentation,
-            slides: newSlides,
-          };
-        });
-
-        setOptionsModalState('slide-edit-video');
-        setClickCount(0);
-      }, 500);
-    } else if (clickCount === 1) {
-      clearTimeout(timeout);
-      setClickCount(0);
-    }
+    setOptionsModalState('slide-edit-video');
   };
 
   const onResizeStop = (e, direction, ref, delta, position) => {
-    if (activeEvent === 'resizing') {
-      const newWidth = parseFloat(ref.style.width) / slideSize.x;
-      const newHeight = parseFloat(ref.style.height) / slideSize.y;
-      const newLeft = position.x / slideSize.x;
-      const newTop = position.y / slideSize.y;
+    const newWidth = parseFloat(ref.style.width) / slideSize.x;
+    const newHeight = parseFloat(ref.style.height) / slideSize.y;
+    const newLeft = position.x / slideSize.x;
+    const newTop = position.y / slideSize.y;
 
-      setPresentation(prevPresentation => {
-        const newContent = prevPresentation.slides[currentSlideNumInt].content.map(contentItem => {
-          if (contentItem.contentNum === content.contentNum) {
-            return {
-              ...contentItem,
-              width: newWidth,
-              height: newHeight,
-              positionTop: newTop,
-              positionLeft: newLeft,
-            };
-          } else {
-            return contentItem;
-          }
-        });
-        const newSlides = prevPresentation.slides.map(slide => {
-          if (slide.slideNum === (currentSlideNumInt + 1)) {
-            return {
-              ...slide,
-              content: newContent,
-            };
-          }
-          return slide
-        });
-
-        return {
-          ...prevPresentation,
-          slides: newSlides,
-        };
+    setPresentation(prevPresentation => {
+      const newContent = prevPresentation.slides[currentSlideNumInt].content.map(contentItem => {
+        if (contentItem.contentNum === content.contentNum) {
+          return {
+            ...contentItem,
+            width: newWidth,
+            height: newHeight,
+            positionTop: newTop,
+            positionLeft: newLeft,
+          };
+        } else {
+          return contentItem;
+        }
       });
-      setActiveEvent(null);
-    }
+      const newSlides = prevPresentation.slides.map(slide => {
+        if (slide.slideNum === (currentSlideNumInt + 1)) {
+          return {
+            ...slide,
+            content: newContent,
+          };
+        }
+        return slide
+      });
+
+      return {
+        ...prevPresentation,
+        slides: newSlides,
+      };
+    });
   };
 
   const onDragStop = (e, d) => {
-    if (activeEvent === 'dragging') {
-      const newLeft = d.x / slideSize.x;
-      const newTop = d.y / slideSize.y;
+    const newLeft = d.x / slideSize.x;
+    const newTop = d.y / slideSize.y;
 
-      setPresentation(prevPresentation => {
-        const newContent = prevPresentation.slides[currentSlideNumInt].content.map(contentItem => {
-          if (contentItem.contentNum === content.contentNum) {
-            return {
-              ...contentItem,
-              positionLeft: newLeft,
-              positionTop: newTop,
-            };
-          } else {
-            return contentItem;
-          }
-        });
-        const newSlides = prevPresentation.slides.map(slide => {
-          if (slide.slideNum === (currentSlideNumInt + 1)) {
-            return {
-              ...slide,
-              content: newContent,
-            };
-          }
-          return slide
-        });
+    setPresentation(prevPresentation => {
+      const newContent = prevPresentation.slides[currentSlideNumInt].content.map(contentItem => {
+        if (contentItem.contentNum === content.contentNum) {
+          return {
+            ...contentItem,
+            positionLeft: newLeft,
+            positionTop: newTop,
+          };
+        } else {
+          return contentItem;
+        }
+      });
+      const newSlides = prevPresentation.slides.map(slide => {
+        if (slide.slideNum === (currentSlideNumInt + 1)) {
+          return {
+            ...slide,
+            content: newContent,
+          };
+        }
+        return slide
+      });
 
-        return {
-          ...prevPresentation,
-          slides: newSlides,
-        };
-      })
-      setActiveEvent(null);
-    }
+      return {
+        ...prevPresentation,
+        slides: newSlides,
+      };
+    })
   };
-
-  const showCornerStyling = () => {
-    setSingleClicked(true);
-    setTimeout(() => {
-      setSingleClicked(false);
-    }, 5000);
-  }
 
   const handleDeleteElemenet = (e) => {
     e.preventDefault();
@@ -187,70 +133,92 @@ function VideoElement ({ content, setOptionsModalState, setPresentation, width, 
       };
     });
   }
-  const isYouTubeUrl = (url) => {
-    return url.match(/(?:youtu|youtube)(?:\.com|\.be)\/([\w\-_]*)/i);
-  };
 
   const getYouTubeEmbedUrl = (url) => {
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w\-_]+)/);
-    return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    try {
+      const urlObj = new URL(url);
+      const videoId = new URLSearchParams(urlObj.search).get('v');
+      if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=0`;
+      } else {
+        throw new Error('Invalid YouTube URL or missing video ID');
+      }
+    } catch (error) {
+      return null;
+    }
   };
 
   const renderVideoContent = () => {
-    if (isYouTubeUrl(content.url)) {
+    if (!content.isFile) {
       return (
         <iframe
           className="video-element"
           draggable="false"
-          onDragStart={(e) => e.preventDefault()}
           src={getYouTubeEmbedUrl(content.url)}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title="Embedded YouTube Video"
-        ></iframe>
+          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+          sandbox="allow-same-origin allow-scripts"
+          ></iframe>
       );
     } else {
       return (
-        <video className='video-element' src={content.url} controls autoPlay={content.autoplay}>
+        <video className='video-element' src={content.url} controls>
           Your browser does not support the video tag.
         </video>
       );
     }
   };
 
+  const selectedClass = isSelected ? 'selectedClass' : 'not-selectedClass';
+
+  const handleSingleClick = (event) => {
+    event.stopPropagation();
+    if (!isSelected) {
+      setSelectedElementID(content.contentId)
+    }
+  }
+
   return (
     <Rnd
-        bounds={'parent'}
-        position={{ x: `${content.positionLeft * slideSize.x}`, y: `${content.positionTop * slideSize.y}` }}
-        className='slide-element-container'
-        onResizeStart={handleResizeStart}
-        onResizeStop={onResizeStop}
-        onDragStart={handleDragStart}
-        onDragStop={onDragStop}
-        onContextMenu={handleDeleteElemenet}
-        style={{
-          maxWidth: (slideSize.x - (content.positionLeft * slideSize.x)),
-          maxHeight: (slideSize.y - (content.positionTop * slideSize.y)),
-          minWidth: (slideSize.x * 0.01),
-          minHeight: (slideSize.y * 0.01)
-        }}
-        size={{ width: `${content.width * slideSize.x}`, height: `${content.height * slideSize.y}` }}
-        enableResizing={{
-          bottomRight: true,
-          bottomLeft: true,
-          topLeft: true,
-          topRight: true,
-        }}
+      bounds={'parent'}
+      position={{ x: `${content.positionLeft * slideSize.x}`, y: `${content.positionTop * slideSize.y}` }}
+      className={`slide-element-container ${selectedClass}`}
+      onClick={handleSingleClick}
+      onDoubleClick={isSelected ? handleEditVideo : null}
+      disableDragging={!isSelected}
+      onResizeStart={handleResizeStart}
+      onResizeStop={onResizeStop}
+      onDragStart={isSelected ? handleDragStart : null}
+      onDragStop={isSelected ? onDragStop : null}
+      onContextMenu={isSelected ? handleDeleteElemenet : null}
+      enableResizing={{
+        top: false,
+        right: false,
+        bottom: false,
+        left: false,
+        topRight: isSelected,
+        bottomRight: isSelected,
+        bottomLeft: isSelected,
+        topLeft: isSelected
+      }}
+      resizeHandleStyles={{
+        topLeft: { width: '8px', height: '8px', top: '-4px', left: '-4px', backgroundColor: '#6495ed' },
+        topRight: { width: '8px', height: '8px', top: '-4px', right: '-4px', backgroundColor: '#6495ed' },
+        bottomLeft: { width: '8px', height: '8px', bottom: '-4px', left: '-4px', backgroundColor: '#6495ed' },
+        bottomRight: { width: '8px', height: '8px', bottom: '-4px', right: '-4px', backgroundColor: '#6495ed' }
+      }}
+      style={{
+        maxWidth: (slideSize.x - (content.positionLeft * slideSize.x)),
+        maxHeight: (slideSize.y - (content.positionTop * slideSize.y)),
+        minWidth: (slideSize.x * 0.01),
+        minHeight: (slideSize.y * 0.01)
+      }}
+      size={{ width: `${content.width * slideSize.x}`, height: `${content.height * slideSize.y}` }}
     >
-      <div onDoubleClick={handleEditVideo} onClick={showCornerStyling}
+      <div
       className='slide-element-content'
       style={{
         zIndex: content.contentNum,
       }}>
-        {singleClicked && <div className="corner-top-left"></div>}
-        {singleClicked && <div className="corner-top-right"></div>}
-        {singleClicked && <div className="corner-bottom-left"></div>}
-        {singleClicked && <div className="corner-bottom-right"></div>}
         {renderVideoContent()}
       </div>
     </Rnd>

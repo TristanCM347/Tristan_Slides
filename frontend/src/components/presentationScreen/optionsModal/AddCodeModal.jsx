@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import '../../../styles/presentationModal.css';
+import { v4 as uuidv4 } from 'uuid';
 
-function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setOptionsModalState, isEditing }) {
+function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setOptionsModalState, isEditing, selectedElementID }) {
   const getContent = (field) => {
     if (field === 'code' && !isEditing) {
       return '';
@@ -16,7 +17,7 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
       return '10';
     }
     for (const content of presentation.slides[currentSlideNumInt].content) {
-      if (content.isEdit === true) {
+      if (content.contentId === selectedElementID) {
         if (field === 'code') {
           return content.code;
         } else if (field === 'width') {
@@ -35,12 +36,11 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
   const [code, setCode] = useState(getContent('code'));
   const width = getContent('width');
   const height = getContent('height')
-  const positionLeft = 0;
-  const positionTop = 0;
   const [fontSize, setFontSize] = useState(getContent('font-size'))
   const [language, setLanguage] = useState(getContent('language'));
+
   const detectLanguage = (code) => {
-    if (code.includes('function') || code.includes('const') || code.includes('console.log')) {
+    if (code.includes('const') || code.includes('console.log')) {
       return 'javascript';
     } else if (code.includes('def')) {
       return 'python';
@@ -53,16 +53,19 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
     let contentIndex;
     let currentLeft;
     let currentTop;
+    let contentId;
 
     for (const content of presentation.slides[currentSlideNumInt].content) {
-      if (content.isEdit === true) {
+      if (selectedElementID === content.contentId) {
         contentIndex = content.contentNum - 1;
         currentLeft = content.positionLeft;
         currentTop = content.positionTop;
+        contentId = content.contentId;
       }
     }
 
     const textBox = {
+      contentId,
       contentNum: contentIndex + 1,
       type: 'code',
       code,
@@ -72,7 +75,6 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
       width,
       positionLeft: currentLeft,
       positionTop: currentTop,
-      isEdit: false,
     };
 
     setPresentation(prevPresentation => {
@@ -97,6 +99,7 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
 
   const handleSubmitAddCode = () => {
     const textBox = {
+      contentId: uuidv4(),
       contentNum: presentation.slides[currentSlideNumInt].content.length + 1,
       type: 'code',
       code,
@@ -104,10 +107,8 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
       fontSize,
       height: parseFloat(height),
       width: parseFloat(width),
-      positionLeft,
-      positionTop,
-      zIndex: presentation.slides[currentSlideNumInt].content.length,
-      isEdit: false,
+      positionLeft: 0,
+      positionTop: 0,
     };
 
     setPresentation(prevPresentation => {
@@ -200,7 +201,7 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
         <label className='form-labels' >Code Editor:</label>
         <div>
         <Editor
-          className="custom-editor"
+          className="monaco-modal"
           onChange={handleEditorChange}
           language={language}
           defaultValue={code}
@@ -208,6 +209,12 @@ function AddCodeModal ({ presentation, currentSlideNumInt, setPresentation, setO
           options={{
             lineNumbers: 'on',
             minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            scrollbar: { vertical: 'auto', horizontal: 'auto' },
+            glyphMargin: false,
+            folding: false,
+            overviewRulerBorder: false,
+            overviewRulerLanes: 0,
           }}
         />
         </div>

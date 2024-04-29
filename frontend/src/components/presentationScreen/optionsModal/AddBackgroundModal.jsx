@@ -7,7 +7,8 @@ function AddBackgroundModal ({ presentation, currentSlideNumInt, setPresentation
   const [defaultBackground, setDefaultBackground] = useState(presentation.defaultBackground);
   const [useCustom, setUseCustom] = useState(presentation.slides[currentSlideNumInt].useCustom);
 
-  const handleSubmitAddBackground = () => {
+  const handleSubmitAddBackground = (event) => {
+    event.preventDefault();
     setPresentation(prevPresentation => {
       const updatedSlides = prevPresentation.slides.map(slide => {
         if (slide.slideNum === (currentSlideNumInt + 1)) {

@@ -4,8 +4,6 @@
 
 .slide-element-container {
   position: absolute;
-  overflow: hidden;
-  border: 1px solid #bfbfbf;
   background-color: white;
 }
 
@@ -13,6 +11,8 @@
   overflow: hidden;
   width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .slide-element:hover {
@@ -71,6 +71,8 @@
 .video-element {
   width: 100%;
   height: 100%;
+  pointer-events: none;
+  border: none;
 }
 
 .text-element {
@@ -78,4 +80,58 @@
   height: 100%;
   margin: 0;
   padding: 0;
+}
+
+.selectedClass {
+  cursor: move !important;
+  border: 2px solid #6495ed;
+}
+
+.not-selectedClass {
+  cursor: pointer !important;
+  border: none;
+}
+
+.resize-handle-top-left {
+  cursor: nw-resize;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  top: -3px;
+  left: -3px;
+  background-color: #6495ed;
+}
+
+.resize-handle-top-right {
+  cursor: ne-resize;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  top: -3px;
+  right: -3px;
+  background-color: #6495ed;
+}
+
+.resize-handle-bottom-left {
+  cursor: sw-resize;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  bottom: -3px;
+  left: -3px;
+  background-color: #6495ed;
+}
+
+.resize-handle-bottom-right {
+  cursor: se-resize;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  bottom: -3px;
+  right: -3px;
+  background-color: #6495ed;
+}
+
+.monaco-slide {
+  pointer-events: none;
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setOptionsModalState, isEditing }) {
+function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setOptionsModalState, isEditing, selectedElementID }) {
   const getContent = (field) => {
     if (field === 'description' && !isEditing) {
       return '';
@@ -16,7 +17,7 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
       return '0.3';
     }
     for (const content of presentation.slides[currentSlideNumInt].content) {
-      if (content.isEdit === true) {
+      if (content.contentId === selectedElementID) {
         if (field === 'description') {
           return content.description;
         } else if (field === 'colour') {
@@ -39,23 +40,24 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
   const [font, setFont] = useState(getContent('font'));
   const [fontSize, setFontSize] = useState(getContent('font-size'))
   const width = getContent('width');
-  const height = getContent('height')
-  const positionLeft = 0;
-  const positionTop = 0;
+  const height = getContent('height');
 
   const handleEditText = () => {
     let contentIndex;
     let currentLeft;
     let currentTop;
+    let contentId;
 
     for (const content of presentation.slides[currentSlideNumInt].content) {
-      if (content.isEdit === true) {
+      if (selectedElementID === content.contentId) {
         contentIndex = content.contentNum - 1;
         currentLeft = content.positionLeft;
         currentTop = content.positionTop;
+        contentId = content.contentId;
       }
     }
     const textBox = {
+      contentId,
       contentNum: contentIndex + 1,
       type: 'text',
       description,
@@ -66,7 +68,6 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
       width,
       positionLeft: currentLeft,
       positionTop: currentTop,
-      isEdit: false,
     };
 
     setPresentation(prevPresentation => {
@@ -91,6 +92,7 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
 
   const handleSubmitAddText = () => {
     const textBox = {
+      contentId: uuidv4(),
       contentNum: presentation.slides[currentSlideNumInt].content.length + 1,
       type: 'text',
       description,
@@ -99,10 +101,8 @@ function AddTextModal ({ presentation, currentSlideNumInt, setPresentation, setO
       fontSize,
       height: parseFloat(height),
       width: parseFloat(width),
-      positionLeft,
-      positionTop,
-      zIndex: presentation.slides[currentSlideNumInt].content.length,
-      isEdit: false,
+      positionLeft: 0,
+      positionTop: 0,
     };
 
     setPresentation(prevPresentation => {

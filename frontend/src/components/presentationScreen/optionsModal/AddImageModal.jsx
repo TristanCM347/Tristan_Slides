@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { fileToDataUrl } from '../../../utility/fileToData';
+import { v4 as uuidv4 } from 'uuid';
 
-function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, setOptionsModalState, isEditing }) {
+function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, setOptionsModalState, isEditing, selectedElementID }) {
   const getContent = (field) => {
     if (field === 'description' && !isEditing) {
       return '';
@@ -13,7 +14,7 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
       return '0.3';
     }
     for (const content of presentation.slides[currentSlideNumInt].content) {
-      if (content.isEdit === true) {
+      if (content.contentId === selectedElementID) {
         if (field === 'description') {
           return content.description;
         } else if (field === 'url') {
@@ -29,6 +30,7 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
 
   const [description, setDescription] = useState(getContent('description'));
   const [selectedFile, setSelectedFile] = useState(getContent('url'));
+
   const handleFileChange = async (event) => {
     const fileNew = event.target.files[0];
     setSelectedFile(await fileToDataUrl(fileNew));
@@ -36,28 +38,30 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
 
   const handleUrlChange = async (event) => {
     const fileNew = event.target.value
+    console.log(fileNew)
     setSelectedFile(await fileToDataUrl(fileNew));
   };
 
   const width = getContent('width');
   const height = getContent('height')
-  const positionLeft = 0;
-  const positionTop = 0;
 
   const handleEditImage = async () => {
     let contentIndex;
     let currentLeft;
     let currentTop;
+    let contentId;
 
     for (const content of presentation.slides[currentSlideNumInt].content) {
-      if (content.isEdit === true) {
+      if (selectedElementID === content.contentId) {
         contentIndex = content.contentNum - 1;
         currentLeft = content.positionLeft;
         currentTop = content.positionTop;
+        contentId = content.contentId;
       }
     }
 
     const textBox = {
+      contentId,
       contentNum: contentIndex + 1,
       type: 'image',
       description,
@@ -66,8 +70,6 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
       width,
       positionLeft: currentLeft,
       positionTop: currentTop,
-      zIndex: presentation.slides[currentSlideNumInt].content.length,
-      isEdit: false,
     };
 
     setPresentation(prevPresentation => {
@@ -90,17 +92,17 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
     setOptionsModalState('none');
   }
 
-  const handleSubmitAddImage = async (event) => {
+  const handleSubmitAddImage = () => {
     const textBox = {
+      contentId: uuidv4(),
       contentNum: presentation.slides[currentSlideNumInt].content.length + 1,
       type: 'image',
       description,
       url: selectedFile,
       height: parseFloat(height),
       width: parseFloat(width),
-      positionLeft,
-      positionTop,
-      isEdit: false,
+      positionLeft: 0,
+      positionTop: 0,
     };
 
     setPresentation(prevPresentation => {
@@ -126,7 +128,8 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
   }
   const [isFile, setIsFile] = useState(true);
 
-  const handleExitModal = () => {
+  const handleExitModal = (event) => {
+    event.preventDefault();
     setOptionsModalState('none');
   }
 
@@ -198,15 +201,14 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
           value={description}
           onChange={handleTextBox}
           placeholder="Description of image for alt tag"
-          rows="2"
+          rows="1"
           onKeyDown={handleKeyDown}
         ></textarea>
         <label className='form-labels'>Type:</label>
-        <div>
+        <div className="radio-container">
           <label className='radio-button'>
             <input
               type="radio"
-              id="url"
               name="source"
               value="url"
               onChange={() => setIsFile(true)}
@@ -218,7 +220,6 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
           <label className='radio-button'>
             <input
               type="radio"
-              id="file"
               name="source"
               value="file"
               onChange={() => setIsFile(false)}
@@ -230,9 +231,12 @@ function AddImageModal ({ presentation, currentSlideNumInt, setPresentation, set
         </div>
         <label className='form-labels'>{getFileTypeTitle()}</label>
         {!isFile
-          ? (<input onKeyDown={handleKeyDown} onChange={handleFileChange} className='thumbnail-input ' name="imageInput" accept="image/jpeg, image/png, image/jpg" type="file"></input>)
+          ? (<input onKeyDown={handleKeyDown} onChange={handleFileChange} name="imageInput" accept="image/jpeg, image/png, image/jpg" type="file"></input>)
           : (<input onKeyDown={handleKeyDown} onChange={handleUrlChange} className='form-inputs' placeholder='Enter a url...' name="imageInput" type="url"></input>)
         }
+        <div className="presentation-modal-2d-element">
+          <img src={selectedFile} alt="Image preview"></img>
+        </div>
         <button type='submit' className='auth-submit-button white-background-grey-text-button' >{getFormTypeButton()}</button>
       </form>
     </div>

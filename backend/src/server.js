@@ -1,11 +1,9 @@
 import fs from 'fs';
 import express from 'express';
-import swaggerUi from 'swagger-ui-express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import { InputError, AccessError, } from './error';
-import swaggerDocument from '../swagger.json';
 import {
   getEmailFromAuthorization,
   login,
@@ -20,7 +18,7 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true, }));
-app.use(bodyParser.json({ limit: '50mb', }));
+app.use(bodyParser.json({ limit: '500mb', }));
 
 const catchErrors = fn => async (req, res) => {
   try {
@@ -83,14 +81,11 @@ app.put('/store', catchErrors(authed(async (req, res, email) => {
 
 app.get('/', (req, res) => res.redirect('/docs'));
 
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
 const configData = JSON.parse(fs.readFileSync('../frontend/src/config.json'));
 const port = 'BACKEND_PORT' in configData ? configData.BACKEND_PORT : 5000;
 
 const server = app.listen(port, () => {
   console.log(`Backend is now listening on port ${port}!`);
-  console.log(`For API docs, navigate to http://localhost:${port}`);
 });
 
 export default server;

@@ -6,7 +6,7 @@ import CodeElement from './slideElements/CodeElement';
 import '../../../styles/slide.css';
 import SlideNumber from './slideElements/SlideNumber';
 
-function Slide ({ optionsModalState, currentSlideNumInt, presentation, setOptionsModalState, setPresentation }) {
+function Slide ({ optionsModalState, currentSlideNumInt, presentation, setOptionsModalState, setPresentation, selectedElementID, setSelectedElementID }) {
   if (optionsModalState !== 'none') {
     return null;
   }
@@ -45,6 +45,8 @@ function Slide ({ optionsModalState, currentSlideNumInt, presentation, setOption
     };
   }, []);
 
+  console.log(presentation.slides[currentSlideNumInt - 1].content);
+
   return (
     <div ref={slideContainerRef} className='slide-container dark-background-colour-theme'>
       <div className='slide'
@@ -54,22 +56,26 @@ function Slide ({ optionsModalState, currentSlideNumInt, presentation, setOption
             if (content.type === 'text') {
               return (
                 <TextElement key={content.contentNum} content={content} setOptionsModalState={setOptionsModalState}
-                setPresentation={setPresentation} width={slideSize.width} height={slideSize.height} currentSlideNumInt={currentSlideNumInt - 1} presentation={presentation}/>
+                setPresentation={setPresentation} width={slideSize.width} height={slideSize.height} currentSlideNumInt={currentSlideNumInt - 1} presentation={presentation}
+                selectedElementID={selectedElementID} setSelectedElementID={setSelectedElementID}/>
               );
             } else if (content.type === 'image') {
               return (
                 <ImageElement key={content.contentNum} content={content} setOptionsModalState={setOptionsModalState}
-                setPresentation={setPresentation} width={slideSize.width} height={slideSize.height} currentSlideNumInt={currentSlideNumInt - 1} presentation={presentation}/>
+                setPresentation={setPresentation} width={slideSize.width} height={slideSize.height} currentSlideNumInt={currentSlideNumInt - 1} presentation={presentation}
+                selectedElementID={selectedElementID} setSelectedElementID={setSelectedElementID}/>
               );
             } else if (content.type === 'code') {
               return (
                 <CodeElement key={content.contentNum} content={content} setOptionsModalState={setOptionsModalState}
-                setPresentation={setPresentation} width={slideSize.width} height={slideSize.height} currentSlideNumInt={currentSlideNumInt - 1} presentation={presentation}/>
+                setPresentation={setPresentation} width={slideSize.width} height={slideSize.height} currentSlideNumInt={currentSlideNumInt - 1} presentation={presentation}
+                selectedElementID={selectedElementID} setSelectedElementID={setSelectedElementID}/>
               );
             } else if (content.type === 'video') {
               return (
                 <VideoElement key={content.contentNum} content={content} setOptionsModalState={setOptionsModalState}
-                setPresentation={setPresentation} width={slideSize.width} height={slideSize.height} currentSlideNumInt={currentSlideNumInt - 1} presentation={presentation}/>
+                setPresentation={setPresentation} width={slideSize.width} height={slideSize.height} currentSlideNumInt={currentSlideNumInt - 1} presentation={presentation}
+                selectedElementID={selectedElementID} setSelectedElementID={setSelectedElementID}/>
               );
             } else {
               return null

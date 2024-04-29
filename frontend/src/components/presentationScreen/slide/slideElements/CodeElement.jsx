@@ -3,11 +3,13 @@ import '../../../../styles/slideElements.css'
 import { Rnd } from 'react-rnd';
 import Editor from '@monaco-editor/react';
 
-function CodeElement ({ content, setOptionsModalState, setPresentation, width, height, currentSlideNumInt, presentation }) {
-  const [clickCount, setClickCount] = useState(0);
-  const [singleClicked, setSingleClicked] = useState(false);
+function CodeElement ({ content, setOptionsModalState, setPresentation, width, height, currentSlideNumInt, presentation, selectedElementID, setSelectedElementID }) {
   const [slideSize, setSlideSize] = useState({ x: width, y: height });
-  const [activeEvent, setActiveEvent] = useState(null);
+  const [isSelected, setIsSelected] = useState(selectedElementID === content.contentId);
+
+  useEffect(() => {
+    setIsSelected(selectedElementID === content.contentId);
+  }, [selectedElementID, content.contentId]);
 
   useEffect(() => {
     setSlideSize({
@@ -15,144 +17,88 @@ function CodeElement ({ content, setOptionsModalState, setPresentation, width, h
       y: height
     });
   }, [width, height]);
-  let timeout;
 
   const handleResizeStart = (e) => {
     e.stopPropagation();
-    if (!activeEvent) {
-      setActiveEvent('resizing');
-    }
   };
 
   const handleDragStart = (e) => {
     e.stopPropagation();
-    if (!activeEvent) {
-      setActiveEvent('dragging');
-    }
   };
 
   const handleEditCode = () => {
-    setClickCount(prevCount => prevCount + 1);
-    if (clickCount === 0) {
-      timeout = setTimeout(() => {
-        setPresentation(prevPresentation => {
-          const newContent = presentation.slides[currentSlideNumInt].content.map(contentItem => {
-            if (contentItem.contentNum === content.contentNum) {
-              return {
-                ...contentItem,
-                isEdit: true
-              };
-            } else {
-              return contentItem;
-            }
-          });
-          const newSlides = prevPresentation.slides.map(slide => {
-            if (slide.slideNum === (currentSlideNumInt + 1)) {
-              return {
-                ...slide,
-                content: newContent,
-              };
-            }
-            return slide
-          });
-
-          return {
-            ...prevPresentation,
-            slides: newSlides,
-          };
-        });
-
-        setOptionsModalState('slide-edit-code');
-        setClickCount(0);
-      }, 500);
-    } else if (clickCount === 1) {
-      clearTimeout(timeout);
-      setClickCount(0);
-    }
+    setOptionsModalState('slide-edit-code');
   };
 
   const onResizeStop = (e, direction, ref, delta, position) => {
-    if (activeEvent === 'resizing') {
-      const newWidth = parseFloat(ref.style.width) / slideSize.x;
-      const newHeight = parseFloat(ref.style.height) / slideSize.y;
-      const newLeft = position.x / slideSize.x;
-      const newTop = position.y / slideSize.y;
+    const newWidth = parseFloat(ref.style.width) / slideSize.x;
+    const newHeight = parseFloat(ref.style.height) / slideSize.y;
+    const newLeft = position.x / slideSize.x;
+    const newTop = position.y / slideSize.y;
 
-      setPresentation(prevPresentation => {
-        const newContent = prevPresentation.slides[currentSlideNumInt].content.map(contentItem => {
-          if (contentItem.contentNum === content.contentNum) {
-            return {
-              ...contentItem,
-              width: newWidth,
-              height: newHeight,
-              positionTop: newTop,
-              positionLeft: newLeft,
-            };
-          } else {
-            return contentItem;
-          }
-        });
-        const newSlides = prevPresentation.slides.map(slide => {
-          if (slide.slideNum === (currentSlideNumInt + 1)) {
-            return {
-              ...slide,
-              content: newContent,
-            };
-          }
-          return slide
-        });
-
-        return {
-          ...prevPresentation,
-          slides: newSlides,
-        };
+    setPresentation(prevPresentation => {
+      const newContent = prevPresentation.slides[currentSlideNumInt].content.map(contentItem => {
+        if (contentItem.contentNum === content.contentNum) {
+          return {
+            ...contentItem,
+            width: newWidth,
+            height: newHeight,
+            positionTop: newTop,
+            positionLeft: newLeft,
+          };
+        } else {
+          return contentItem;
+        }
       });
-      setActiveEvent(null);
-    }
+      const newSlides = prevPresentation.slides.map(slide => {
+        if (slide.slideNum === (currentSlideNumInt + 1)) {
+          return {
+            ...slide,
+            content: newContent,
+          };
+        }
+        return slide
+      });
+
+      return {
+        ...prevPresentation,
+        slides: newSlides,
+      };
+    });
   };
 
   const onDragStop = (e, d) => {
-    if (activeEvent === 'dragging') {
-      const newLeft = d.x / slideSize.x;
-      const newTop = d.y / slideSize.y;
+    const newLeft = d.x / slideSize.x;
+    const newTop = d.y / slideSize.y;
 
-      setPresentation(prevPresentation => {
-        const newContent = prevPresentation.slides[currentSlideNumInt].content.map(contentItem => {
-          if (contentItem.contentNum === content.contentNum) {
-            return {
-              ...contentItem,
-              positionLeft: newLeft,
-              positionTop: newTop,
-            };
-          } else {
-            return contentItem;
-          }
-        });
-        const newSlides = prevPresentation.slides.map(slide => {
-          if (slide.slideNum === (currentSlideNumInt + 1)) {
-            return {
-              ...slide,
-              content: newContent,
-            };
-          }
-          return slide
-        });
+    setPresentation(prevPresentation => {
+      const newContent = prevPresentation.slides[currentSlideNumInt].content.map(contentItem => {
+        if (contentItem.contentNum === content.contentNum) {
+          return {
+            ...contentItem,
+            positionLeft: newLeft,
+            positionTop: newTop,
+          };
+        } else {
+          return contentItem;
+        }
+      });
+      const newSlides = prevPresentation.slides.map(slide => {
+        if (slide.slideNum === (currentSlideNumInt + 1)) {
+          return {
+            ...slide,
+            content: newContent,
+          };
+        }
+        return slide
+      });
 
-        return {
-          ...prevPresentation,
-          slides: newSlides,
-        };
-      })
-      setActiveEvent(null);
-    }
+      return {
+        ...prevPresentation,
+        slides: newSlides,
+      };
+    })
   };
-
-  const showCornerStyling = () => {
-    setSingleClicked(true);
-    setTimeout(() => {
-      setSingleClicked(false);
-    }, 5000);
-  }
 
   const handleDeleteElemenet = (e) => {
     e.preventDefault();
@@ -189,66 +135,78 @@ function CodeElement ({ content, setOptionsModalState, setPresentation, width, h
     });
   }
 
-  const handleEditorDidMount = (editor, monaco) => {
-    const editorDomNode = editor.getDomNode();
+  const selectedClass = isSelected ? 'selectedClass' : 'not-selectedClass';
 
-    if (editorDomNode) {
-      editorDomNode.addEventListener('contextmenu', handleDeleteElemenet);
+  const handleSingleClick = (event) => {
+    event.stopPropagation();
+    if (!isSelected) {
+      setSelectedElementID(content.contentId)
     }
-    return () => {
-      if (editorDomNode) {
-        editorDomNode.removeEventListener('contextmenu', handleDeleteElemenet);
-      }
-    };
-  };
+  }
 
   return (
     <Rnd
-        bounds={'parent'}
-        position={{ x: `${content.positionLeft * slideSize.x}`, y: `${content.positionTop * slideSize.y}` }}
-        className='slide-element-container'
-        onResizeStart={handleResizeStart}
-        onResizeStop={onResizeStop}
-        onDragStart={handleDragStart}
-        onDragStop={onDragStop}
-        onContextMenu={handleDeleteElemenet}
-        style={{
-          maxWidth: (slideSize.x - (content.positionLeft * slideSize.x)),
-          maxHeight: (slideSize.y - (content.positionTop * slideSize.y)),
-          minWidth: (slideSize.x * 0.01),
-          minHeight: (slideSize.y * 0.01)
-        }}
-        size={{ width: `${content.width * slideSize.x}`, height: `${content.height * slideSize.y}` }}
-        enableResizing={{
-          bottomRight: true,
-          bottomLeft: true,
-          topLeft: true,
-          topRight: true,
-        }}
+      bounds={'parent'}
+      position={{ x: `${content.positionLeft * slideSize.x}`, y: `${content.positionTop * slideSize.y}` }}
+      className={`slide-element-container ${selectedClass}`}
+      onClick={handleSingleClick}
+      onDoubleClick={isSelected ? handleEditCode : null}
+      disableDragging={!isSelected}
+      onResizeStart={handleResizeStart}
+      onResizeStop={onResizeStop}
+      onDragStart={isSelected ? handleDragStart : null}
+      onDragStop={isSelected ? onDragStop : null}
+      onContextMenu={isSelected ? handleDeleteElemenet : null}
+      enableResizing={{
+        top: false,
+        right: false,
+        bottom: false,
+        left: false,
+        topRight: isSelected,
+        bottomRight: isSelected,
+        bottomLeft: isSelected,
+        topLeft: isSelected
+      }}
+      resizeHandleStyles={{
+        topLeft: { width: '8px', height: '8px', top: '-4px', left: '-4px', backgroundColor: '#6495ed' },
+        topRight: { width: '8px', height: '8px', top: '-4px', right: '-4px', backgroundColor: '#6495ed' },
+        bottomLeft: { width: '8px', height: '8px', bottom: '-4px', left: '-4px', backgroundColor: '#6495ed' },
+        bottomRight: { width: '8px', height: '8px', bottom: '-4px', right: '-4px', backgroundColor: '#6495ed' }
+      }}
+      style={{
+        maxWidth: (slideSize.x - (content.positionLeft * slideSize.x)),
+        maxHeight: (slideSize.y - (content.positionTop * slideSize.y)),
+        minWidth: (slideSize.x * 0.01),
+        minHeight: (slideSize.y * 0.01)
+      }}
+      size={{ width: `${content.width * slideSize.x}`, height: `${content.height * slideSize.y}` }}
     >
-      <div onDoubleClick={handleEditCode} onClick={showCornerStyling}
+      <div
       className='slide-element-content'
       style={{
         zIndex: content.contentNum,
       }}>
-        {singleClicked && <div className="corner-top-left"></div>}
-        {singleClicked && <div className="corner-top-right"></div>}
-        {singleClicked && <div className="corner-bottom-left"></div>}
-        {singleClicked && <div className="corner-bottom-right"></div>}
         <Editor
+          className='monaco-slide'
           height='100%'
           width='100%'
-          zIndex='10000000'
+          zIndex='9999999'
           language={content.language}
           defaultValue={content.code}
-          onMount={handleEditorDidMount}
           theme="vs-dark"
           options={{
             lineNumbers: 'on',
             fontSize: `${content.fontSize}em`,
             readOnly: true,
             minimap: { enabled: false },
-            scrollBeyondLastLine: false
+            scrollBeyondLastLine: false,
+            scrollbar: { vertical: 'hidden', horizontal: 'hidden' },
+            glyphMargin: false,
+            folding: false,
+            overviewRulerBorder: false,
+            overviewRulerLanes: 0,
+            lineNumbersMinChars: 4,
+            mouseWheelScrollSensitivity: 0
           }}
         />
       </div>

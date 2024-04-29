@@ -115,3 +115,7 @@
   font-size: 1.25em;
   display: block;
 }
+
+.pointer {
+  cursor: pointer;
+}

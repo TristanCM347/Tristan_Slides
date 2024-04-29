@@ -13,27 +13,57 @@
  * @param {File} file The file to be read.
  * @return {Promise<string>} Promise which resolves to the file as a data url.
  */
-export function fileToDataUrl (file) {
-  if (typeof file === 'string') {
-    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube.com|youtu.be)\/.+$/;
-    if (!youtubeRegex.test(file)) {
-      return file;
+// export function fileToDataUrl (file) {
+//   const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg', 'video/mp4', 'video/webm', 'video/ogg'];
+//   const valid = validFileTypes.find(type => type === file.type);
+
+//   if (!valid) {
+//     throw Error('provided file is not a png, jpg or jpeg image.');
+//   }
+
+//   const reader = new FileReader();
+//   const dataUrlPromise = new Promise((resolve, reject) => {
+//     reader.onerror = reject;
+//     reader.onload = () => resolve(reader.result);
+//   });
+//   reader.readAsDataURL(file);
+//   return dataUrlPromise;
+// }
+
+function isFile (input) {
+  return input instanceof File;
+}
+
+export async function fileToDataUrl (input) {
+  if (isFile(input)) {
+    // Handle file object
+    const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg', 'video/mp4', 'video/webm', 'video/ogg'];
+    const valid = validFileTypes.includes(input.type);
+
+    if (!valid) {
+      throw new Error('Provided file is not a valid image or video.');
     }
-    return Promise.resolve(file);
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Error reading file'));
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(input);
+    });
+  } else if (typeof input === 'string') {
+    // Handle URL
+    const response = await fetch(input);
+    if (!response.ok) {
+      throw new Error('Failed to fetch the image');
+    }
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Error converting blob to data URL'));
+      reader.readAsDataURL(blob);
+    });
+  } else {
+    throw new Error('Input must be a file or a valid URL');
   }
-
-  const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg', 'video/mp4', 'video/webm', 'video/ogg'];
-  const valid = validFileTypes.find(type => type === file.type);
-
-  if (!valid) {
-    throw Error('provided file is not a png, jpg or jpeg image.');
-  }
-
-  const reader = new FileReader();
-  const dataUrlPromise = new Promise((resolve, reject) => {
-    reader.onerror = reject;
-    reader.onload = () => resolve(reader.result);
-  });
-  reader.readAsDataURL(file);
-  return dataUrlPromise;
 }

@@ -196,12 +196,6 @@
   margin-top: 0px !important;
 }
 
-.custom-editor {
-  width: 90%;
-  height: 200px;
-  z-index: 10000000;
-}
-
 .form-color {
   width: 100%;
 }
@@ -249,4 +243,54 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+}
+
+.radio-container {
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+  gap: 20px;
+}
+
+.radio-container label {
+  margin-bottom: 0;
+}
+
+.presentation-modal-2d-element {
+  width: 125px; 
+  height: 125px; 
+  margin: 0 auto;
+  margin-top: 15px;
+  border-radius: 5px;
+  border: 1px solid white;
+  overflow: hidden;
+
+}
+
+.presentation-modal-2d-element img {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.presentation-modal-2d-element iframe {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.presentation-modal-2d-element video {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.monaco-modal {
+  width: 90%;
+  height: 200px;
+  z-index: 10000000;
 }
