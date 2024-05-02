@@ -4,6 +4,7 @@
 
 This project is my own implementation of an online presentation and design platform. 
 Inspired by Canva, Google Slides, PowerPoint it is designed to demonstrate a full-stack application.
+This project currently has 13.5k lines of code.
 
 To get started with your local setup, follow these steps:
 
