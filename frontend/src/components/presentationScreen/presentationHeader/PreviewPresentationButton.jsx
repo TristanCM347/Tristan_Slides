@@ -21,7 +21,10 @@ function PreviewPresentationButton ({ presentation }) {
 
     await setData(data);
 
-    window.open(url);
+    const previewWindow = window.open(url);
+    if (previewWindow) {
+      previewWindow.document.title = 'Preview';
+    }
   };
 
   return (

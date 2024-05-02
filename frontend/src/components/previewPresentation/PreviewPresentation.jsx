@@ -6,6 +6,7 @@ import PreviewNavigation from './previewSlideNavigation/PreviewNavigation';
 import PreviewSlide from './PreviewSlide';
 
 function PreviewPresentation () {
+  document.title = 'Preview';
   const { presentationId, slideNum } = useParams();
   const navigate = useNavigate();
   const slideNumInt = Number(slideNum);
