@@ -1,7 +1,7 @@
-import config from '../config.json';
+const API_BASE = process.env.REACT_APP_BACKEND_URL;
 
 export const noAuthAPICall = async (path, method, body) => {
-  const url = `http://localhost:${config.BACKEND_PORT}/${path}`;
+  const url = `${API_BASE}/${path}`;
   const response = await fetch(url, {
     method: `${method}`,
     headers: {
@@ -17,7 +17,7 @@ export const noAuthAPICall = async (path, method, body) => {
 };
 
 export const authAPICall = async (path, method, token, body = undefined, queryString = undefined) => {
-  let url = `http://localhost:${config.BACKEND_PORT}/${path}`;
+  let url = `${API_BASE}/${path}`;
 
   if (queryString !== undefined) {
     url += `?${queryString}`;

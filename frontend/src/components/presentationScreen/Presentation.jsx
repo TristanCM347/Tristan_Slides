@@ -25,6 +25,7 @@ function Presentation () {
     const fetchData = async () => {
       try {
         const data = await getData();
+        console.log(data)
         setAutoSave(data.store.autoSave);
         for (const eachPresentation of data.store.presentations) {
           if (eachPresentation.id === presentationId) {
