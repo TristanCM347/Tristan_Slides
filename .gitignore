@@ -1,0 +1,120 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ENV / local config
+.env
+.env.*
+instance/
+*.env
+
+# Flask stuff
+# if you have an `instance/` folder for per-deploy settings, ignore it
+instance/
+
+# Database files
+*.sqlite3
+*.db
+
+# Migrations – usually you _do_ commit your Alembic/Flask-Migrate scripts,
+# so leave your migrations/ folder tracked if you want versioned schema history.
+# If you really want to ignore it (e.g. you generate them elsewhere), uncomment:
+# migrations/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Coverage / profilers
+.coverage
+.cache/
+.profiler
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# JetBrains
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code
+.vscode/
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -1,0 +1,41 @@
+
+services:
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - .env
+    environment:
+      - MYSQL_HOST=db
+    ports:
+      - "${BACKEND_PORT:-5005}:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
+
+
+# source venv/bin/activate
+# export FLASK_APP=app.py
+# export FLASK_ENV=development
+# flask run

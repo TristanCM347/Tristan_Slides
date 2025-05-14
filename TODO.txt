@@ -1,0 +1,6 @@
+1. containerise and make sure it works locally and with docker as well
+2. try to get microservices working
+3. DEPLOY with AWS
+
+4. try to refine and fix safety concerns
+5. 
