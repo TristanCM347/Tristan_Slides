@@ -1,41 +1,66 @@
-
 services:
-  db:
+  # ─── Auth Database ─────────────────────────────────────────
+  db_auth:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-    ports:
-      - "3306:3306"
-    volumes:
-      - db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-
-  backend:
-    build:
-      context: ./backend
     env_file:
       - .env
     environment:
-      - MYSQL_HOST=db
+      - MYSQL_DATABASE=${MYSQL_AUTH_DATABASE}
+    volumes:
+      - db-auth-data:/var/lib/mysql
+    healthcheck:
+      test:     ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout:  3s
+      retries:  10
+
+  # ─── Store Database ────────────────────────────────────────
+  db_store:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - .env
+    environment:
+      - MYSQL_DATABASE=${MYSQL_STORE_DATABASE}
+    volumes:
+      - db-store-data:/var/lib/mysql
+    healthcheck:
+      test:     ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout:  3s
+      retries:  10
+
+  # ─── Auth Service ──────────────────────────────────────────
+  auth:
+    build: ./backend/auth-service
+    env_file:
+      - .env
+    environment:
+      - MYSQL_HOST=db_auth
+      - MYSQL_DATABASE=${MYSQL_AUTH_DATABASE}
+      - FLASK_ENV=production
     ports:
-      - "${BACKEND_PORT:-5005}:5000"
+      - "5001:5000"
     depends_on:
-      db:
+      db_auth:
+        condition: service_healthy
+
+  # ─── Store Service ─────────────────────────────────────────
+  store:
+    build: ./backend/store-service
+    env_file:
+      - .env
+    environment:
+      - MYSQL_HOST=db_store
+      - MYSQL_DATABASE=${MYSQL_STORE_DATABASE}
+      - FLASK_ENV=production
+    ports:
+      - "5002:5000"
+    depends_on:
+      db_store:
         condition: service_healthy
 
 volumes:
-  db-data:
-
-
-# source venv/bin/activate
-# export FLASK_APP=app.py
-# export FLASK_ENV=development
-# flask run
+  db-auth-data:
+  db-store-data:
